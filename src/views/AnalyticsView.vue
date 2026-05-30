@@ -2,8 +2,8 @@
   <div class="analytics-view">
     <div class="page-header">
       <div>
-        <h1 class="page-title">Analytics</h1>
-        <p class="page-desc">Your learning statistics and insights</p>
+        <h1 class="page-title">{{ $t('page.analytics.title') }}</h1>
+        <p class="page-desc">{{ $t('page.analytics.subtitle') }}</p>
       </div>
       <div class="header-actions">
         <button
@@ -16,7 +16,7 @@
             <polyline points="7 10 12 15 17 10" />
             <line x1="12" y1="15" x2="12" y2="3" />
           </svg>
-          Export Study
+          {{ $t('page.analytics.export_study') }}
         </button>
         <button
           class="export-btn"
@@ -28,7 +28,7 @@
             <polyline points="7 10 12 15 17 10" />
             <line x1="12" y1="15" x2="12" y2="3" />
           </svg>
-          Export Tasks
+          {{ $t('page.analytics.export_tasks') }}
         </button>
       </div>
     </div>
@@ -44,7 +44,7 @@
           <path d="M2 17l10 5 10-5" />
           <path d="M2 12l10 5 10-5" />
         </svg>
-        Study
+        {{ $t('page.analytics.tab_study') }}
       </button>
       <button
         class="tab"
@@ -55,14 +55,14 @@
           <path d="M9 11l3 3L22 4" />
           <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" />
         </svg>
-        Tasks
+        {{ $t('page.analytics.tab_tasks') }}
       </button>
     </div>
 
     <!-- STUDY TAB -->
     <template v-if="activeTab === 'study'">
       <div v-if="!stats.statsVisible.value" class="empty-state">
-        <p>No study data yet. Start adding entries in Journal.</p>
+        <p>{{ $t('page.analytics.empty_study') }}</p>
       </div>
 
       <template v-else>
@@ -75,7 +75,7 @@
               </svg>
             </div>
             <div class="stat-body">
-              <span class="stat-label">Total Time</span
+              <span class="stat-label">{{ $t('page.analytics.total_time') }}</span
               ><span class="stat-value">{{ fmt(store.totalActualTime) }}</span>
             </div>
           </div>
@@ -87,7 +87,7 @@
               </svg>
             </div>
             <div class="stat-body">
-              <span class="stat-label">Entries</span
+              <span class="stat-label">{{ $t('page.analytics.entries') }}</span
               ><span class="stat-value">{{ store.totalEntries }}</span>
             </div>
           </div>
@@ -98,9 +98,9 @@
               </svg>
             </div>
             <div class="stat-body">
-              <span class="stat-label">Avg Per Day</span
+              <span class="stat-label">{{ $t('page.analytics.avg_per_day') }}</span
               ><span class="stat-value"
-                >{{ avgPerDay }}<span class="stat-unit">min</span></span
+                >{{ avgPerDay }}<span class="stat-unit">{{ $t('page.analytics.min') }}</span></span
               >
             </div>
           </div>
@@ -111,7 +111,7 @@
               </svg>
             </div>
             <div class="stat-body">
-              <span class="stat-label">Technologies</span
+              <span class="stat-label">{{ $t('page.analytics.technologies') }}</span
               ><span class="stat-value">{{ techCount }}</span>
             </div>
           </div>
@@ -120,7 +120,7 @@
         <div class="charts-grid">
           <div class="chart-card">
             <h3 class="chart-title">
-              Daily Activity <span class="chart-sub">(last 14 days)</span>
+              {{ $t('page.analytics.daily_activity') }} <span class="chart-sub">{{ $t('page.analytics.last_14_days') }}</span>
             </h3>
             <div class="daily-chart" v-if="dailyData.length > 0">
               <div v-for="day in dailyData" :key="day.date" class="daily-bar-wrap">
@@ -134,10 +134,10 @@
                 <span class="daily-label">{{ day.short }}</span>
               </div>
             </div>
-            <div v-else class="chart-empty">No entries in the last 14 days</div>
+            <div v-else class="chart-empty">{{ $t('page.analytics.empty_daily') }}</div>
           </div>
           <div class="chart-card">
-            <h3 class="chart-title">Actual Time by Technology</h3>
+            <h3 class="chart-title">{{ $t('page.analytics.actual_time_by_tech') }}</h3>
             <div class="tech-chart" v-if="store.sortedActualTimeByTechnology.length > 0">
               <div
                 v-for="[tech, time] in store.sortedActualTimeByTechnology"
@@ -153,22 +153,22 @@
                 </div>
               </div>
             </div>
-            <div v-else class="chart-empty">No technologies yet</div>
+            <div v-else class="chart-empty">{{ $t('page.analytics.empty_tech') }}</div>
           </div>
         </div>
 
         <div class="chart-card full-width">
-          <h3 class="chart-title">Technology Summary</h3>
+          <h3 class="chart-title">{{ $t('page.analytics.tech_summary') }}</h3>
           <div class="summary-table-container">
             <table class="summary-table">
               <thead>
                 <tr>
-                  <th>Technology</th>
-                  <th>Entries</th>
-                  <th>Planned</th>
-                  <th>Actual</th>
-                  <th>Avg Session</th>
-                  <th>Last Studied</th>
+                  <th>{{ $t('page.analytics.col_technology') }}</th>
+                  <th>{{ $t('page.analytics.col_entries') }}</th>
+                  <th>{{ $t('page.analytics.col_planned') }}</th>
+                  <th>{{ $t('page.analytics.col_actual') }}</th>
+                  <th>{{ $t('page.analytics.col_avg_session') }}</th>
+                  <th>{{ $t('page.analytics.col_last_studied') }}</th>
                 </tr>
               </thead>
               <tbody>
@@ -194,7 +194,7 @@
     <!-- TASKS TAB -->
     <template v-if="activeTab === 'tasks'">
       <div v-if="taskStore.tasks.length === 0" class="empty-state">
-        <p>No tasks yet. Add tasks in the Tasks page.</p>
+        <p>{{ $t('page.analytics.empty_tasks') }}</p>
       </div>
 
       <template v-else>
@@ -207,7 +207,7 @@
               </svg>
             </div>
             <div class="stat-body">
-              <span class="stat-label">Total Tasks</span
+              <span class="stat-label">{{ $t('page.analytics.total_tasks') }}</span
               ><span class="stat-value">{{ taskStore.tasks.length }}</span>
             </div>
           </div>
@@ -219,7 +219,7 @@
               </svg>
             </div>
             <div class="stat-body">
-              <span class="stat-label">Done</span
+              <span class="stat-label">{{ $t('page.analytics.done') }}</span
               ><span class="stat-value">{{ taskStore.doneCount }}</span>
             </div>
           </div>
@@ -230,7 +230,7 @@
               </svg>
             </div>
             <div class="stat-body">
-              <span class="stat-label">Todo</span
+              <span class="stat-label">{{ $t('page.analytics.todo') }}</span
               ><span class="stat-value">{{ taskStore.todoCount }}</span>
             </div>
           </div>
@@ -241,7 +241,7 @@
               </svg>
             </div>
             <div class="stat-body">
-              <span class="stat-label">Actual Time</span
+              <span class="stat-label">{{ $t('page.analytics.actual_time') }}</span
               ><span class="stat-value">{{ fmt(taskStore.totalActualTime) }}</span>
             </div>
           </div>
@@ -249,7 +249,7 @@
 
         <div class="charts-grid">
           <div class="chart-card">
-            <h3 class="chart-title">Completion</h3>
+            <h3 class="chart-title">{{ $t('page.analytics.completion') }}</h3>
             <div class="donut-wrap">
               <svg viewBox="0 0 36 36" class="donut">
                 <path
@@ -271,15 +271,15 @@
               <div class="donut-label">{{ donePct }}%</div>
             </div>
             <div class="done-text">
-              {{ taskStore.doneCount }} of {{ taskStore.tasks.length }} tasks done
+              {{ taskStore.doneCount }} {{ $t('page.analytics.of') }} {{ taskStore.tasks.length }} {{ $t('page.analytics.done_tasks') }}
             </div>
           </div>
           <div class="chart-card">
-            <h3 class="chart-title">Time Overview</h3>
+            <h3 class="chart-title">{{ $t('page.analytics.time_overview') }}</h3>
             <div class="tech-chart">
               <div class="tech-row">
                 <div class="tech-row-label">
-                  <span class="tech-name">Estimated</span
+                  <span class="tech-name">{{ $t('page.analytics.estimated') }}</span
                   ><span class="tech-stat">{{ fmtMin(taskStore.totalEstimated) }}</span>
                 </div>
                 <div class="tech-bar-track">
@@ -291,7 +291,7 @@
               </div>
               <div class="tech-row">
                 <div class="tech-row-label">
-                  <span class="tech-name">Actual (all)</span
+                  <span class="tech-name">{{ $t('page.analytics.actual_all') }}</span
                   ><span class="tech-stat">{{ fmt(taskStore.totalActualTime) }}</span>
                 </div>
                 <div class="tech-bar-track">
@@ -303,7 +303,7 @@
               </div>
               <div class="tech-row">
                 <div class="tech-row-label">
-                  <span class="tech-name">Actual (done)</span
+                  <span class="tech-name">{{ $t('page.analytics.actual_done') }}</span
                   ><span class="tech-stat">{{ fmt(taskStore.doneActualTime) }}</span>
                 </div>
                 <div class="tech-bar-track">
@@ -318,17 +318,17 @@
         </div>
 
         <div class="chart-card full-width">
-          <h3 class="chart-title">All Tasks</h3>
+          <h3 class="chart-title">{{ $t('page.analytics.all_tasks') }}</h3>
           <div class="summary-table-container">
             <table class="summary-table">
               <thead>
                 <tr>
                   <th></th>
-                  <th>Title</th>
-                  <th>Status</th>
-                  <th>Estimated</th>
-                  <th>Actual</th>
-                  <th>Created</th>
+                  <th>{{ $t('page.analytics.col_title') }}</th>
+                  <th>{{ $t('page.analytics.col_status') }}</th>
+                  <th>{{ $t('page.analytics.col_estimated') }}</th>
+                  <th>{{ $t('page.analytics.col_actual') }}</th>
+                  <th>{{ $t('page.analytics.col_created') }}</th>
                 </tr>
               </thead>
               <tbody>

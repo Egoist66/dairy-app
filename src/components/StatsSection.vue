@@ -9,7 +9,7 @@
           </svg>
         </div>
         <div class="stat-info">
-          <span class="stat-label">Total Time</span>
+          <span class="stat-label">{{ $t('stats.total_time') }}</span>
           <span class="stat-value">{{ fmt(store.totalActualTime) }}</span>
         </div>
       </div>
@@ -23,7 +23,7 @@
           </svg>
         </div>
         <div class="stat-info">
-          <span class="stat-label">Today's Focus</span>
+          <span class="stat-label">{{ $t('stats.today_focus') }}</span>
           <span class="stat-value">{{ stats.todayFocus.value || '—' }}</span>
         </div>
       </div>
@@ -38,7 +38,7 @@
           </svg>
         </div>
         <div class="stat-info">
-          <span class="stat-label">Today</span>
+          <span class="stat-label">{{ $t('stats.today') }}</span>
           <span class="stat-value">{{ fmt(stats.todayTime.value) }}</span>
         </div>
       </div>
@@ -53,14 +53,14 @@
           </svg>
         </div>
         <div class="stat-info">
-          <span class="stat-label">Entries</span>
+          <span class="stat-label">{{ $t('stats.entries') }}</span>
           <span class="stat-value">{{ store.totalEntries }}</span>
         </div>
       </div>
     </div>
 
     <div v-if="store.sortedActualTimeByTechnology.length > 0" class="tech-breakdown">
-      <h3 class="breakdown-title">Actual Time by Technology</h3>
+      <h3 class="breakdown-title">{{ $t('stats.actual_time_by_tech') }}</h3>
       <div class="breakdown-chart">
         <div
           v-for="[tech, time] in store.sortedActualTimeByTechnology"

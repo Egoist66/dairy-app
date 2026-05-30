@@ -8,30 +8,30 @@
         </svg>
       </div>
       <div>
-        <h2 class="card-title">New Task</h2>
-        <p class="card-desc">Add a task to track</p>
+        <h2 class="card-title">{{ $t('add_task.title') }}</h2>
+        <p class="card-desc">{{ $t('add_task.subtitle') }}</p>
       </div>
     </div>
 
     <form @submit.prevent="submit">
       <div class="form-row">
         <div class="form-group flex-1">
-          <label for="task-title">Title</label>
-          <input id="task-title" v-model="title" type="text" placeholder="What needs to be done?" ref="inputRef" />
+          <label for="task-title">{{ $t('add_task.title_label') }}</label>
+          <input id="task-title" v-model="title" type="text" :placeholder="$t('add_task.title_placeholder')" ref="inputRef" />
         </div>
         <div class="form-group est-group">
-          <label for="task-est">Est. min</label>
-          <input id="task-est" v-model.number="estimated" type="number" min="1" placeholder="30" />
+          <label for="task-est">{{ $t('add_task.est_min') }}</label>
+          <input id="task-est" v-model.number="estimated" type="number" min="1" :placeholder="$t('add_task.est_placeholder')" />
         </div>
       </div>
 
       <div class="form-row color-row">
         <div class="form-group flex-1">
-          <label for="task-desc">Description</label>
-          <textarea id="task-desc" v-model="description" rows="2" placeholder="Optional details..."></textarea>
+          <label for="task-desc">{{ $t('add_task.description') }}</label>
+          <textarea id="task-desc" v-model="description" rows="2" :placeholder="$t('add_task.desc_placeholder')"></textarea>
         </div>
         <div class="form-group color-group">
-          <label for="task-color">Color</label>
+          <label for="task-color">{{ $t('add_task.color') }}</label>
           <input id="task-color" v-model="color" type="color" />
         </div>
       </div>
@@ -41,7 +41,7 @@
           <path d="M20 14.66V20a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h5.34" />
           <polygon points="18 2 22 6 12 16 8 16 8 12 18 2" />
         </svg>
-        Add Task
+        {{ $t('add_task.add') }}
       </button>
     </form>
   </div>

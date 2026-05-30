@@ -7,14 +7,14 @@
           <polyline points="12 6 12 12 16 14" />
         </svg>
         <span>
-          Timer in progress —
+          {{ $t('journal.timer_in_progress') }}
           <strong>{{ getResumeTech }}</strong> —
-          <strong class="resume-time">{{ timer.formatTime(timer.pendingResume.value.elapsed) }}</strong> elapsed
+          <strong class="resume-time">{{ timer.formatTime(timer.pendingResume.value.elapsed) }}</strong> {{ $t('journal.elapsed') }}
         </span>
       </div>
       <div class="resume-actions">
-        <button class="resume-btn" @click="resumeTimer">Continue</button>
-        <button class="dismiss-btn" @click="timer.dismissResume()">Dismiss</button>
+        <button class="resume-btn" @click="resumeTimer">{{ $t('journal.continue') }}</button>
+        <button class="dismiss-btn" @click="timer.dismissResume()">{{ $t('journal.dismiss') }}</button>
       </div>
     </div>
     <div class="table-toolbar">
@@ -26,7 +26,7 @@
         <input
           v-model="filter.searchQuery.value"
           type="text"
-          placeholder="Search entries..."
+          :placeholder="$t('journal.search_placeholder')"
         />
       </div>
       <div class="filter-controls">
@@ -47,7 +47,7 @@
           class="clear-btn"
           @click="filter.clearFilter()"
         >
-          Clear
+          {{ $t('journal.clear') }}
         </button>
       </div>
     </div>
@@ -62,7 +62,7 @@
               :class="{ active: filter.sortField.value === 'date' }"
               @click="filter.toggleSort('date')"
             >
-              Date
+              {{ $t('journal.date') }}
               <span v-if="filter.sortField.value === 'date'" class="sort-arrow">
                 {{ filter.sortOrder.value === 'asc' ? '↑' : '↓' }}
               </span>
@@ -72,7 +72,7 @@
               :class="{ active: filter.sortField.value === 'technology' }"
               @click="filter.toggleSort('technology')"
             >
-              Technology
+              {{ $t('journal.technology') }}
               <span v-if="filter.sortField.value === 'technology'" class="sort-arrow">
                 {{ filter.sortOrder.value === 'asc' ? '↑' : '↓' }}
               </span>
@@ -82,14 +82,14 @@
               :class="{ active: filter.sortField.value === 'timeSpent' }"
               @click="filter.toggleSort('timeSpent')"
             >
-              Time
+              {{ $t('journal.time') }}
               <span v-if="filter.sortField.value === 'timeSpent'" class="sort-arrow">
                 {{ filter.sortOrder.value === 'asc' ? '↑' : '↓' }}
               </span>
             </th>
-            <th class="col-timer">Timer</th>
-            <th class="col-notes">Notes</th>
-            <th class="col-actions">Actions</th>
+            <th class="col-timer">{{ $t('journal.timer') }}</th>
+            <th class="col-notes">{{ $t('journal.notes') }}</th>
+            <th class="col-actions">{{ $t('journal.actions') }}</th>
           </tr>
         </thead>
         <TransitionGroup tag="tbody" name="row">
@@ -108,7 +108,7 @@
               </span>
             </td>
             <td class="col-time">
-              <span class="time-badge">{{ entry.timeSpent }} min</span>
+              <span class="time-badge">{{ entry.timeSpent }} {{ $t('journal.min') }}</span>
             </td>
             <td class="col-timer">
               <div v-if="timer.isRunning(entry.id)" class="timer-running">
@@ -121,19 +121,19 @@
                   <span class="timer-sep">/</span>
                   <span class="timer-target">{{ timer.formatTime(timer.targetSeconds.value) }}</span>
                 </div>
-                <button class="timer-stop-btn" @click="stopTimer(entry)" title="Stop">
+                <button class="timer-stop-btn" @click="stopTimer(entry)" :title="$t('journal.stop')">
                   <svg viewBox="0 0 24 24" fill="currentColor">
                     <rect x="6" y="6" width="12" height="12" rx="1" />
                   </svg>
                 </button>
               </div>
               <div v-else class="timer-idle">
-                <button class="timer-start-btn" @click="startTimer(entry)" title="Start timer">
+                <button class="timer-start-btn" @click="startTimer(entry)" :title="$t('journal.start_timer')">
                   <svg viewBox="0 0 24 24" fill="currentColor">
                     <polygon points="5 3 19 12 5 21 5 3" />
                   </svg>
                 </button>
-                <span class="timer-plan">{{ entry.timeSpent }} min</span>
+                <span class="timer-plan">{{ entry.timeSpent }} {{ $t('journal.min') }}</span>
                 <template v-if="entry.actualTimeSpent">
                   <span class="timer-actual-sep">·</span>
                   <span class="timer-actual">{{ timer.formatShort(entry.actualTimeSpent) }}</span>
@@ -147,13 +147,13 @@
               <span v-else class="no-notes">—</span>
             </td>
             <td class="col-actions">
-              <button class="action-btn edit-btn" title="Edit" @click="emit('edit', entry)">
+              <button class="action-btn edit-btn" :title="$t('journal.edit')" @click="emit('edit', entry)">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                   <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
                   <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
                 </svg>
               </button>
-              <button class="action-btn delete-btn" title="Delete" @click="handleDelete(entry)">
+              <button class="action-btn delete-btn" :title="$t('journal.delete')" @click="handleDelete(entry)">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                   <polyline points="3 6 5 6 21 6" />
                   <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
@@ -170,12 +170,12 @@
         <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
         <polyline points="14 2 14 8 20 8" />
       </svg>
-      <p class="empty-title">No entries found</p>
+      <p class="empty-title">{{ $t('journal.empty_title') }}</p>
       <p class="empty-desc" v-if="filter.hasActiveFilter.value">
-        Try adjusting your search or filter
+        {{ $t('journal.empty_filtered') }}
       </p>
       <p class="empty-desc" v-else>
-        Start by adding your first learning entry above
+        {{ $t('journal.empty_start') }}
       </p>
     </div>
 

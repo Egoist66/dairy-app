@@ -13,8 +13,8 @@
               </svg>
             </div>
             <div>
-              <h1>Tech Journal</h1>
-              <p>Track your daily progression</p>
+              <h1>{{ $t('app.title') }}</h1>
+              <p>{{ $t('app.subtitle') }}</p>
             </div>
           </div>
         </div>
@@ -27,22 +27,25 @@
               <line x1="16" y1="13" x2="8" y2="13" />
               <line x1="16" y1="17" x2="8" y2="17" />
             </svg>
-            Journal
+            {{ $t('nav.journal') }}
           </router-link>
           <router-link to="/analytics" class="nav-link" :class="{ active: $route.path === '/analytics' }">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
             </svg>
-            Analytics
+            {{ $t('nav.analytics') }}
           </router-link>
           <router-link to="/tasks" class="nav-link" :class="{ active: $route.path === '/tasks' }">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M9 11l3 3L22 4" />
               <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" />
             </svg>
-            Tasks
+            {{ $t('nav.tasks') }}
           </router-link>
         </nav>
+        <button class="lang-toggle" @click="$toggleLocale" :title="$locale.value === 'en' ? 'Switch to Russian' : 'Switch to English'">
+          {{ $locale.value === 'en' ? 'RU' : 'EN' }}
+        </button>
         <slot name="header-end" />
       </div>
     </header>
@@ -150,6 +153,26 @@
 .nav-link.active {
   color: var(--accent-1);
   background: rgba(59, 130, 246, 0.1);
+}
+
+.lang-toggle {
+  padding: 0.3rem 0.6rem;
+  background: var(--bg-primary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text-muted);
+  font-size: 0.72rem;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  letter-spacing: 0.03em;
+  transition: all var(--transition);
+  flex-shrink: 0;
+}
+
+.lang-toggle:hover {
+  border-color: var(--accent-1);
+  color: var(--accent-1);
 }
 
 .app-main {

@@ -3,7 +3,7 @@
     <div v-if="entry" class="modal-overlay" @click.self="emit('close')">
       <div class="modal-content">
         <div class="modal-header">
-          <h3>Edit Entry</h3>
+          <h3>{{ $t('edit_entry.title') }}</h3>
           <button class="modal-close" @click="emit('close')">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <line x1="18" y1="6" x2="6" y2="18" />
@@ -14,23 +14,23 @@
 
         <form @submit.prevent="handleSave">
           <div class="form-group">
-            <label for="edit-tech">Technology</label>
+            <label for="edit-tech">{{ $t('edit_entry.technology') }}</label>
             <input id="edit-tech" v-model="form.technology" type="text" required />
           </div>
 
           <div class="form-row">
             <div class="form-group">
-              <label for="edit-time">Time (minutes)</label>
+              <label for="edit-time">{{ $t('edit_entry.time') }}</label>
               <input id="edit-time" v-model.number="form.timeSpent" type="number" min="1" required />
             </div>
             <div class="form-group">
-              <label for="edit-date">Date</label>
+              <label for="edit-date">{{ $t('edit_entry.date') }}</label>
               <input id="edit-date" v-model="form.date" type="date" required />
             </div>
           </div>
 
           <div class="form-group">
-            <label for="edit-color">Color</label>
+            <label for="edit-color">{{ $t('edit_entry.color') }}</label>
             <div class="color-picker">
               <input id="edit-color" v-model="form.color" type="color" />
               <span class="color-value">{{ form.color }}</span>
@@ -38,13 +38,13 @@
           </div>
 
           <div class="form-group">
-            <label for="edit-notes">Notes</label>
-            <textarea id="edit-notes" v-model="form.notes" rows="3" placeholder="What did you learn?"></textarea>
+            <label for="edit-notes">{{ $t('edit_entry.notes') }}</label>
+            <textarea id="edit-notes" v-model="form.notes" rows="3" :placeholder="$t('edit_entry.notes_placeholder')"></textarea>
           </div>
 
           <div class="modal-actions">
-            <button type="button" class="btn btn-cancel" @click="emit('close')">Cancel</button>
-            <button type="submit" class="btn btn-save">Save Changes</button>
+            <button type="button" class="btn btn-cancel" @click="emit('close')">{{ $t('edit_entry.cancel') }}</button>
+            <button type="submit" class="btn btn-save">{{ $t('edit_entry.save') }}</button>
           </div>
         </form>
       </div>

@@ -2,9 +2,9 @@
   <div class="tasks-view">
     <div class="view-header">
       <div>
-        <h1 class="view-title">Tasks</h1>
+        <h1 class="view-title">{{ $t('page.tasks.title') }}</h1>
         <p class="view-desc">
-          {{ store.todoCount }} todo · {{ store.doneCount }} done
+          {{ store.todoCount }} {{ $t('page.tasks.todo') }} · {{ store.doneCount }} {{ $t('page.tasks.done') }}
         </p>
       </div>
     </div>
@@ -17,27 +17,27 @@
       <section class="tasks-content">
         <div class="tasks-card">
           <div v-if="store.tasks.length === 0" class="empty">
-            <p>No tasks yet. Add your first task.</p>
+            <p>{{ $t('page.tasks.empty') }}</p>
           </div>
 
           <template v-else>
             <div v-if="selectedIds.size > 0" class="bulk-bar">
-              <span class="bulk-count">{{ selectedIds.size }} selected</span>
+              <span class="bulk-count">{{ selectedIds.size }} {{ $t('page.tasks.selected') }}</span>
               <div class="bulk-actions">
                 <button class="bulk-btn bulk-done" @click="bulkMarkDone">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <polyline points="20 6 9 17 4 12" />
                   </svg>
-                  Mark Done
+                  {{ $t('page.tasks.mark_done') }}
                 </button>
                 <button class="bulk-btn bulk-delete" @click="bulkDelete">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <polyline points="3 6 5 6 21 6" />
                     <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6" />
                   </svg>
-                  Delete
+                  {{ $t('page.tasks.delete') }}
                 </button>
-                <button class="bulk-btn bulk-clear" @click="clearSelection">Clear</button>
+                <button class="bulk-btn bulk-clear" @click="clearSelection">{{ $t('page.tasks.clear') }}</button>
               </div>
             </div>
 
@@ -71,7 +71,7 @@
                     <span class="task-title" :class="{ crossed: task.status === 'done' }">{{ task.title }}</span>
                     <div class="task-meta">
                       <span v-if="task.description" class="task-desc">{{ task.description }}</span>
-                      <span class="task-status-badge" :class="task.status">{{ task.status === 'in_progress' ? 'in progress' : task.status }}</span>
+                      <span class="task-status-badge" :class="task.status">{{ $t('page.tasks.' + task.status) }}</span>
                     </div>
                   </div>
                 </div>
@@ -96,7 +96,7 @@
                     <button class="timer-start-btn" @click="startTaskTimer(task)">
                       <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3" /></svg>
                     </button>
-                    <span class="timer-plan">{{ task.estimatedMinutes }} min</span>
+                    <span class="timer-plan">{{ task.estimatedMinutes }} {{ $t('page.tasks.min') }}</span>
                     <template v-if="task.actualTimeSpent">
                       <span class="timer-sep-dot">·</span>
                       <span class="timer-actual">{{ timer.formatShort(task.actualTimeSpent) }}</span>
@@ -109,7 +109,7 @@
                     v-if="task.status !== 'done'"
                     class="status-btn done-btn"
                     @click="store.update(task.id, { status: 'done' })"
-                    title="Mark done"
+                    :title="$t('page.tasks.mark_done_title')"
                   >
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                       <polyline points="20 6 9 17 4 12" />
@@ -118,7 +118,7 @@
                   <button
                     class="status-btn edit-btn"
                     @click="openEdit(task)"
-                    title="Edit"
+                    :title="$t('page.tasks.edit')"
                   >
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                       <path d="M20 14.66V20a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h5.34" />
@@ -128,7 +128,7 @@
                   <button
                     class="status-btn delete-btn"
                     @click="store.remove(task.id)"
-                    title="Delete"
+                    :title="$t('page.tasks.delete_title')"
                   >
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                       <polyline points="3 6 5 6 21 6" />
@@ -153,13 +153,13 @@
           <polyline points="12 6 12 12 16 14" />
         </svg>
         <span>
-          Timer in progress for task —
-          <strong class="resume-time">{{ timer.formatTime(timer.pendingResume.value.elapsed) }}</strong> elapsed
+          {{ $t('page.tasks.timer_in_progress') }}
+          <strong class="resume-time">{{ timer.formatTime(timer.pendingResume.value.elapsed) }}</strong> {{ $t('page.tasks.elapsed') }}
         </span>
       </div>
       <div class="resume-actions">
-        <button class="resume-btn" @click="resumeTaskTimer">Continue</button>
-        <button class="dismiss-btn" @click="timer.dismissResume()">Dismiss</button>
+        <button class="resume-btn" @click="resumeTaskTimer">{{ $t('page.tasks.continue') }}</button>
+        <button class="dismiss-btn" @click="timer.dismissResume()">{{ $t('page.tasks.dismiss') }}</button>
       </div>
     </div>
   </div>

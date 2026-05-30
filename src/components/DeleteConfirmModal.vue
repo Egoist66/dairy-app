@@ -8,15 +8,13 @@
             <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
           </svg>
         </div>
-        <h3 class="confirm-title">Delete Entry</h3>
+        <h3 class="confirm-title">{{ $t('delete.title') }}</h3>
         <p class="confirm-desc">
-          Are you sure you want to delete
-          <strong>"{{ technology }}"</strong> from
-          <strong>{{ date }}</strong>?
+          {{ $t('delete.confirm') }} "{{ technology }}" — {{ date }}?
         </p>
         <div class="confirm-actions">
-          <button class="btn btn-cancel" @click="emit('cancel')">Cancel</button>
-          <button class="btn btn-delete" @click="emit('confirm')">Delete</button>
+          <button class="btn btn-cancel" @click="emit('cancel')">{{ $t('delete.cancel') }}</button>
+          <button class="btn btn-delete" @click="emit('confirm')">{{ $t('delete.confirm') }}</button>
         </div>
       </div>
     </div>

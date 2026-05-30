@@ -3,7 +3,7 @@
     <div v-if="task" class="modal-overlay" @click.self="emit('close')">
       <div class="modal-content">
         <div class="modal-header">
-          <h3>Edit Task</h3>
+          <h3>{{ $t('edit_task.title') }}</h3>
           <button class="modal-close" @click="emit('close')">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <line x1="18" y1="6" x2="6" y2="18" />
@@ -14,43 +14,43 @@
 
         <form @submit.prevent="handleSave">
           <div class="form-group">
-            <label for="edit-task-title">Title</label>
+            <label for="edit-task-title">{{ $t('edit_task.title_label') }}</label>
             <input id="edit-task-title" v-model="form.title" type="text" required />
           </div>
 
           <div class="form-row">
             <div class="form-group flex-1">
-              <label for="edit-task-desc">Description</label>
-              <textarea id="edit-task-desc" v-model="form.description" rows="2" placeholder="Optional details..."></textarea>
+              <label for="edit-task-desc">{{ $t('edit_task.description') }}</label>
+              <textarea id="edit-task-desc" v-model="form.description" rows="2" :placeholder="$t('edit_task.desc_placeholder')"></textarea>
             </div>
             <div class="form-group color-group">
-              <label for="edit-task-color">Color</label>
+              <label for="edit-task-color">{{ $t('edit_task.color') }}</label>
               <input id="edit-task-color" v-model="form.color" type="color" />
             </div>
           </div>
 
           <div class="form-row-row">
             <div class="form-group">
-              <label for="edit-task-est">Estimated (minutes)</label>
+              <label for="edit-task-est">{{ $t('edit_task.estimated') }}</label>
               <input id="edit-task-est" v-model.number="form.estimatedMinutes" type="number" min="1" required />
             </div>
             <div class="form-group">
-              <label for="edit-task-actual">Actual time (seconds)</label>
+              <label for="edit-task-actual">{{ $t('edit_task.actual_time') }}</label>
               <input id="edit-task-actual" v-model.number="form.actualTimeSpent" type="number" min="0" required />
             </div>
             <div class="form-group">
-              <label for="edit-task-status">Status</label>
+              <label for="edit-task-status">{{ $t('edit_task.status') }}</label>
               <select id="edit-task-status" v-model="form.status">
-                <option value="todo">Todo</option>
-                <option value="in_progress">In Progress</option>
-                <option value="done">Done</option>
+                <option value="todo">{{ $t('edit_task.status_todo') }}</option>
+                <option value="in_progress">{{ $t('edit_task.status_in_progress') }}</option>
+                <option value="done">{{ $t('edit_task.status_done') }}</option>
               </select>
             </div>
           </div>
 
           <div class="modal-actions">
-            <button type="button" class="btn btn-cancel" @click="emit('close')">Cancel</button>
-            <button type="submit" class="btn btn-save">Save Changes</button>
+            <button type="button" class="btn btn-cancel" @click="emit('close')">{{ $t('edit_task.cancel') }}</button>
+            <button type="submit" class="btn btn-save">{{ $t('edit_task.save') }}</button>
           </div>
         </form>
       </div>

@@ -8,53 +8,53 @@
         </svg>
       </div>
       <div>
-        <h2 class="card-title">New Entry</h2>
-        <p class="card-desc">Log what you learned today</p>
+        <h2 class="card-title">{{ $t('entry.new_entry') }}</h2>
+        <p class="card-desc">{{ $t('entry.subtitle') }}</p>
       </div>
     </div>
 
     <form @submit.prevent="submitForm">
       <div class="form-row">
         <div class="form-group flex-1">
-          <label for="tech">Technology</label>
+          <label for="tech">{{ $t('entry.technology') }}</label>
           <input
             id="tech"
             v-model="technology"
             type="text"
-            placeholder="e.g., Vue 3, Rust, TypeScript"
+            :placeholder="$t('entry.tech_placeholder')"
             ref="techInput"
           />
         </div>
         <div class="form-group time-group">
-          <label for="time">Minutes</label>
+          <label for="time">{{ $t('entry.minutes') }}</label>
           <input
             id="time"
             v-model.number="timeSpent"
             type="number"
             min="1"
-            placeholder="45"
+            :placeholder="$t('entry.min_placeholder')"
           />
         </div>
       </div>
 
       <div class="form-row">
         <div class="form-group flex-1">
-          <label for="entry-date">Date</label>
+          <label for="entry-date">{{ $t('entry.date') }}</label>
           <input id="entry-date" v-model="date" type="date" />
         </div>
         <div class="form-group color-group">
-          <label for="entry-color">Color</label>
+          <label for="entry-color">{{ $t('entry.color') }}</label>
           <input id="entry-color" v-model="color" type="color" />
         </div>
       </div>
 
       <div class="form-group">
-        <label for="entry-notes">Notes</label>
+        <label for="entry-notes">{{ $t('entry.notes') }}</label>
         <textarea
           id="entry-notes"
           v-model="notes"
           rows="2"
-          placeholder="Any additional notes about what you learned..."
+          :placeholder="$t('entry.notes_placeholder')"
         ></textarea>
       </div>
 
@@ -63,7 +63,7 @@
           <path d="M20 14.66V20a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h5.34" />
           <polygon points="18 2 22 6 12 16 8 16 8 12 18 2" />
         </svg>
-        Add Entry
+        {{ $t('entry.add') }}
       </button>
     </form>
   </div>
