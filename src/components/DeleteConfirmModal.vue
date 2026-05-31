@@ -8,10 +8,8 @@
             <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
           </svg>
         </div>
-        <h3 class="confirm-title">{{ $t('delete.title') }}</h3>
-        <p class="confirm-desc">
-          {{ $t('delete.confirm') }} "{{ technology }}" — {{ date }}?
-        </p>
+        <h3 class="confirm-title">{{ title || $t('delete.title') }}</h3>
+        <p class="confirm-desc">{{ message || `${$t('delete.confirm')} "${technology}" — ${date}?` }}</p>
         <div class="confirm-actions">
           <button class="btn btn-cancel" @click="emit('cancel')">{{ $t('delete.cancel') }}</button>
           <button class="btn btn-delete" @click="emit('confirm')">{{ $t('delete.confirm') }}</button>
@@ -24,8 +22,10 @@
 <script setup lang="ts">
 defineProps<{
   visible: boolean
-  technology: string
-  date: string
+  technology?: string
+  date?: string
+  title?: string
+  message?: string
 }>()
 
 const emit = defineEmits<{
@@ -88,10 +88,6 @@ const emit = defineEmits<{
   color: var(--text-secondary);
   line-height: 1.5;
   margin: 0 0 1.5rem;
-}
-
-.confirm-desc strong {
-  color: var(--text-primary);
 }
 
 .confirm-actions {

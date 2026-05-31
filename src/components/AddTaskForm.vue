@@ -36,6 +36,49 @@
         </div>
       </div>
 
+      <div class="form-row-row">
+        <div class="form-group">
+          <label for="task-priority">{{ $t('add_task.priority') }}</label>
+          <select id="task-priority" v-model="priority">
+            <option value="low">{{ $t('add_task.priority_low') }}</option>
+            <option value="medium">{{ $t('add_task.priority_medium') }}</option>
+            <option value="high">{{ $t('add_task.priority_high') }}</option>
+            <option value="critical">{{ $t('add_task.priority_critical') }}</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="task-due">{{ $t('add_task.due_date') }}</label>
+          <input id="task-due" v-model="dueDate" type="date" />
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>{{ $t('add_task.tags') }}</label>
+        <div class="tag-selector">
+          <div class="tag-chips">
+            <span v-for="tag in selectedTags" :key="tag" class="tag-chip">
+              {{ tag }}
+              <button type="button" class="tag-remove" @click="removeTag(tag)">&times;</button>
+            </span>
+          </div>
+          <div class="tag-input-row">
+            <input v-model="tagInput" type="text" :placeholder="$t('add_task.tag_placeholder')" @keydown.enter.prevent="addTag" @keydown.,.prevent="addTag" />
+            <button type="button" class="tag-add-btn" @click="addTag">{{ $t('add_task.add') }}</button>
+          </div>
+          <div v-if="store.availableTags.length" class="tag-suggestions">
+            <button
+              v-for="tag in store.availableTags.filter(t => !selectedTags.includes(t))"
+              :key="tag"
+              type="button"
+              class="tag-suggestion"
+              @click="selectSuggestion(tag)"
+            >
+              {{ tag }}
+            </button>
+          </div>
+        </div>
+      </div>
+
       <button type="submit" class="submit-btn">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <path d="M20 14.66V20a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h5.34" />
@@ -50,6 +93,11 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useTaskStore } from '../store/tasks'
+import type { TaskPriority } from '../types/task'
+
+const emit = defineEmits<{
+  added: []
+}>()
 
 const store = useTaskStore()
 const inputRef = ref<HTMLInputElement | null>(null)
@@ -58,6 +106,29 @@ const title = ref('')
 const estimated = ref(0)
 const description = ref('')
 const color = ref('#f59e0b')
+const priority = ref<TaskPriority>('medium')
+const dueDate = ref('')
+const selectedTags = ref<string[]>([])
+const tagInput = ref('')
+
+function addTag() {
+  const t = tagInput.value.trim().toLowerCase()
+  if (t && !selectedTags.value.includes(t)) {
+    selectedTags.value.push(t)
+    store.addTag(t)
+  }
+  tagInput.value = ''
+}
+
+function removeTag(tag: string) {
+  selectedTags.value = selectedTags.value.filter(t => t !== tag)
+}
+
+function selectSuggestion(tag: string) {
+  if (!selectedTags.value.includes(tag)) {
+    selectedTags.value.push(tag)
+  }
+}
 
 function submit() {
   if (title.value.trim() === '' || estimated.value <= 0) return
@@ -69,6 +140,10 @@ function submit() {
     actualTimeSpent: 0,
     color: color.value,
     status: 'todo',
+    priority: priority.value,
+    tags: [...selectedTags.value],
+    dueDate: dueDate.value || undefined,
+    checklist: [],
     createdAt: new Date().toISOString().split('T')[0],
   })
 
@@ -76,6 +151,11 @@ function submit() {
   estimated.value = 0
   description.value = ''
   color.value = '#f59e0b'
+  priority.value = 'medium'
+  dueDate.value = ''
+  selectedTags.value = []
+  tagInput.value = ''
+  emit('added')
   inputRef.value?.focus()
 }
 </script>
@@ -133,6 +213,13 @@ function submit() {
   grid-template-columns: 1fr 70px;
 }
 
+.form-row-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
 .color-group input[type="color"] {
   height: 38px;
   padding: 2px !important;
@@ -153,7 +240,8 @@ function submit() {
 }
 
 .form-group input,
-.form-group textarea {
+.form-group textarea,
+.form-group select {
   width: 100%;
   padding: 0.6rem 0.8rem;
   background: var(--bg-primary);
@@ -166,14 +254,111 @@ function submit() {
   outline: none;
 }
 
+.form-group select {
+  cursor: pointer;
+  appearance: auto;
+}
+
 .form-group input:focus,
-.form-group textarea:focus {
+.form-group textarea:focus,
+.form-group select:focus {
   border-color: var(--accent-1);
 }
 
 .form-group textarea {
   resize: vertical;
   min-height: 50px;
+}
+
+.tag-selector {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.tag-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+}
+
+.tag-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.15rem 0.5rem;
+  background: rgba(59, 130, 246, 0.12);
+  color: #60a5fa;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.tag-remove {
+  background: none;
+  border: none;
+  color: #60a5fa;
+  cursor: pointer;
+  font-size: 1rem;
+  line-height: 1;
+  padding: 0;
+  opacity: 0.6;
+}
+
+.tag-remove:hover { opacity: 1; }
+
+.tag-input-row {
+  display: flex;
+  gap: 0.4rem;
+}
+
+.tag-input-row input {
+  flex: 1;
+  padding: 0.4rem 0.6rem;
+  background: var(--bg-primary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
+  font-size: 0.8rem;
+  font-family: inherit;
+  outline: none;
+}
+
+.tag-input-row input:focus { border-color: var(--accent-1); }
+
+.tag-add-btn {
+  padding: 0.4rem 0.7rem;
+  background: var(--accent-1);
+  border: none;
+  border-radius: var(--radius-sm);
+  color: white;
+  font-size: 0.75rem;
+  cursor: pointer;
+  font-weight: 500;
+  font-family: inherit;
+  white-space: nowrap;
+}
+
+.tag-suggestions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+}
+
+.tag-suggestion {
+  padding: 0.1rem 0.45rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  color: var(--text-muted);
+  font-size: 0.7rem;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.tag-suggestion:hover {
+  border-color: var(--accent-1);
+  color: var(--accent-1);
 }
 
 .submit-btn {

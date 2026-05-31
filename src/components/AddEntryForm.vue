@@ -73,6 +73,10 @@
 import { ref } from 'vue'
 import { useJournalStore } from '../store/journal'
 
+const emit = defineEmits<{
+  added: []
+}>()
+
 const store = useJournalStore()
 
 const techInput = ref<HTMLInputElement | null>(null)
@@ -102,6 +106,7 @@ function submitForm() {
   notes.value = ''
   date.value = new Date().toISOString().split('T')[0]
 
+  emit('added')
   techInput.value?.focus()
 }
 </script>

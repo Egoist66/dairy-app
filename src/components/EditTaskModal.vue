@@ -48,6 +48,56 @@
             </div>
           </div>
 
+          <div class="form-row-row">
+            <div class="form-group">
+              <label for="edit-task-priority">{{ $t('edit_task.priority') }}</label>
+              <select id="edit-task-priority" v-model="form.priority">
+                <option value="low">{{ $t('edit_task.priority_low') }}</option>
+                <option value="medium">{{ $t('edit_task.priority_medium') }}</option>
+                <option value="high">{{ $t('edit_task.priority_high') }}</option>
+                <option value="critical">{{ $t('edit_task.priority_critical') }}</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="edit-task-due">{{ $t('edit_task.due_date') }}</label>
+              <input id="edit-task-due" v-model="form.dueDate" type="date" />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>{{ $t('edit_task.tags') }}</label>
+            <div class="tag-selector">
+              <div class="tag-chips">
+                <span v-for="tag in form.tags" :key="tag" class="tag-chip">
+                  {{ tag }}
+                  <button type="button" class="tag-remove" @click="removeTag(tag)">&times;</button>
+                </span>
+              </div>
+              <div class="tag-input-row">
+                <input v-model="tagInput" type="text" :placeholder="$t('edit_task.tag_placeholder')" @keydown.enter.prevent="addTag" @keydown.,.prevent="addTag" />
+                <button type="button" class="tag-add-btn" @click="addTag">{{ $t('edit_task.add_tag') }}</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>{{ $t('edit_task.checklist') }}</label>
+            <div class="checklist">
+              <div v-for="item in form.checklist" :key="item.id" class="checklist-item">
+                <label class="checklist-label">
+                  <input type="checkbox" :checked="item.done" @change="toggleChecklistItem(item.id)" />
+                  <span class="checklist-check"></span>
+                </label>
+                <input v-model="item.text" type="text" class="checklist-text" @change="updateChecklistItemText(item.id, item.text)" />
+                <button type="button" class="checklist-remove" @click="removeChecklistItem(item.id)">&times;</button>
+              </div>
+              <div class="checklist-add-row">
+                <input v-model="checklistInput" type="text" :placeholder="$t('edit_task.checklist_placeholder')" @keydown.enter.prevent="addChecklistItem" />
+                <button type="button" class="tag-add-btn" @click="addChecklistItem">{{ $t('edit_task.add') }}</button>
+              </div>
+            </div>
+          </div>
+
           <div class="modal-actions">
             <button type="button" class="btn btn-cancel" @click="emit('close')">{{ $t('edit_task.cancel') }}</button>
             <button type="submit" class="btn btn-save">{{ $t('edit_task.save') }}</button>
@@ -61,7 +111,7 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue'
 import { useTaskStore } from '../store/tasks'
-import type { Task } from '../types/task'
+import type { Task, TaskPriority, ChecklistItem } from '../types/task'
 
 const props = defineProps<{
   task: Task | null
@@ -81,7 +131,14 @@ const form = ref({
   actualTimeSpent: 0,
   color: '#f59e0b',
   status: 'todo' as Task['status'],
+  priority: 'medium' as TaskPriority,
+  dueDate: '',
+  tags: [] as string[],
+  checklist: [] as ChecklistItem[],
 })
+
+const tagInput = ref('')
+const checklistInput = ref('')
 
 watch(() => props.task, (t) => {
   if (t) {
@@ -92,9 +149,47 @@ watch(() => props.task, (t) => {
       actualTimeSpent: t.actualTimeSpent,
       color: t.color,
       status: t.status,
+      priority: t.priority ?? 'medium',
+      dueDate: t.dueDate ?? '',
+      tags: [...(t.tags ?? [])],
+      checklist: t.checklist ? t.checklist.map(c => ({ ...c })) : [],
     }
   }
 }, { immediate: true })
+
+function addTag() {
+  const t = tagInput.value.trim().toLowerCase()
+  if (t && !form.value.tags.includes(t)) {
+    form.value.tags.push(t)
+    store.addTag(t)
+  }
+  tagInput.value = ''
+}
+
+function removeTag(tag: string) {
+  form.value.tags = form.value.tags.filter(t => t !== tag)
+}
+
+function addChecklistItem() {
+  const text = checklistInput.value.trim()
+  if (!text) return
+  form.value.checklist.push({ id: crypto.randomUUID(), text, done: false })
+  checklistInput.value = ''
+}
+
+function toggleChecklistItem(id: string) {
+  const item = form.value.checklist.find(c => c.id === id)
+  if (item) item.done = !item.done
+}
+
+function updateChecklistItemText(id: string, text: string) {
+  const item = form.value.checklist.find(c => c.id === id)
+  if (item) item.text = text
+}
+
+function removeChecklistItem(id: string) {
+  form.value.checklist = form.value.checklist.filter(c => c.id !== id)
+}
 
 function handleSave() {
   if (!props.task) return
@@ -107,6 +202,10 @@ function handleSave() {
     actualTimeSpent: form.value.actualTimeSpent,
     color: form.value.color,
     status: form.value.status,
+    priority: form.value.priority,
+    dueDate: form.value.dueDate || undefined,
+    tags: [...form.value.tags],
+    checklist: form.value.checklist.map(c => ({ ...c })),
   })
 
   emit('saved')
@@ -132,7 +231,9 @@ function handleSave() {
   border-radius: var(--radius-lg);
   padding: 1.5rem;
   width: 100%;
-  max-width: 520px;
+  max-width: 560px;
+  max-height: 90vh;
+  overflow-y: auto;
   box-shadow: var(--shadow);
   animation: scaleIn 0.2s ease;
 }
@@ -165,7 +266,6 @@ function handleSave() {
 }
 
 .modal-close svg { width: 15px; height: 15px; }
-
 .modal-close:hover { background: var(--surface); color: var(--text-primary); }
 
 .form-group { margin-bottom: 0.85rem; }
@@ -178,7 +278,7 @@ function handleSave() {
 
 .form-row-row {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-columns: 1fr 1fr;
   gap: 0.75rem;
 }
 
@@ -223,6 +323,176 @@ function handleSave() {
   resize: vertical;
   min-height: 50px;
 }
+
+.tag-selector {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.tag-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+}
+
+.tag-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.15rem 0.5rem;
+  background: rgba(59, 130, 246, 0.12);
+  color: #60a5fa;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.tag-remove {
+  background: none;
+  border: none;
+  color: #60a5fa;
+  cursor: pointer;
+  font-size: 1rem;
+  line-height: 1;
+  padding: 0;
+  opacity: 0.6;
+}
+
+.tag-remove:hover { opacity: 1; }
+
+.tag-input-row {
+  display: flex;
+  gap: 0.4rem;
+}
+
+.tag-input-row input {
+  flex: 1;
+  padding: 0.4rem 0.6rem;
+  background: var(--bg-primary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
+  font-size: 0.8rem;
+  font-family: inherit;
+  outline: none;
+}
+
+.tag-input-row input:focus { border-color: var(--accent-1); }
+
+.tag-add-btn {
+  padding: 0.4rem 0.7rem;
+  background: var(--accent-1);
+  border: none;
+  border-radius: var(--radius-sm);
+  color: white;
+  font-size: 0.75rem;
+  cursor: pointer;
+  font-weight: 500;
+  font-family: inherit;
+  white-space: nowrap;
+}
+
+.checklist {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.checklist-item {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.checklist-label {
+  position: relative;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.checklist-label input {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.checklist-check {
+  width: 18px;
+  height: 18px;
+  border-radius: 4px;
+  border: 2px solid var(--border);
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition);
+}
+
+.checklist-label input:checked + .checklist-check {
+  background: var(--accent-1);
+  border-color: var(--accent-1);
+}
+
+.checklist-label input:checked + .checklist-check::after {
+  content: '';
+  width: 5px;
+  height: 9px;
+  border: solid white;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+  margin-top: -1px;
+}
+
+.checklist-text {
+  flex: 1;
+  padding: 0.35rem 0.5rem;
+  background: var(--bg-primary);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  color: var(--text-primary);
+  font-size: 0.82rem;
+  font-family: inherit;
+  outline: none;
+}
+
+.checklist-text:focus { border-color: var(--accent-1); }
+
+.checklist-remove {
+  background: none;
+  border: none;
+  color: var(--danger);
+  cursor: pointer;
+  font-size: 1.2rem;
+  line-height: 1;
+  padding: 0 0.2rem;
+  opacity: 0.6;
+}
+
+.checklist-remove:hover { opacity: 1; }
+
+.checklist-add-row {
+  display: flex;
+  gap: 0.4rem;
+  margin-top: 0.3rem;
+}
+
+.checklist-add-row input {
+  flex: 1;
+  padding: 0.4rem 0.6rem;
+  background: var(--bg-primary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
+  font-size: 0.8rem;
+  font-family: inherit;
+  outline: none;
+}
+
+.checklist-add-row input:focus { border-color: var(--accent-1); }
 
 .modal-actions {
   display: flex;
